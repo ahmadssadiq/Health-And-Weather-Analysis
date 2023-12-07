@@ -1,3 +1,10 @@
+/*
+It manages several pieces of state, including weather data and city name.
+The useEffect hook is used to update the current date and time every second.
+A function handleSearch fetches weather data from an API.
+The application uses React Router for navigation and includes routes for sign-up and health data pages.
+It also renders a UI for searching weather data and displaying health recommendations.
+*/
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';

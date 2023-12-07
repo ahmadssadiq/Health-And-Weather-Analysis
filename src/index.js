@@ -1,3 +1,7 @@
+/*
+It uses ReactDOM.createRoot to render the App component into the div with id="root" in the index.html.
+reportWebVitals is a tool for logging performance-related metrics, but it's not used actively in this code.
+*/
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

@@ -1,3 +1,9 @@
+/*
+Handles health data
+It uses useState to manage local states: healthRisks for user input and healthRecommendations for displaying results.
+The component provides an input form for users to enter potential health risks and a button to trigger analysis.
+The analyzeHealthRisks function is a placeholder for making API calls to analyze health risks based on user input.
+*/
 import React, { useState } from 'react';
 
 const HealthData = () => {

@@ -1,3 +1,10 @@
+/* 
+Imports HealthData and Index
+ Two pieces of state are defined using useState: weatherData and healthData.
+Functions fetchWeather and fetchHealth are defined to fetch data from APIs.
+ */
+
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
