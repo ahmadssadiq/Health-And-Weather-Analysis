@@ -2,6 +2,9 @@
 It uses useState to manage form inputs: username, email, and password.
 The handleSignUp function is designed to send a POST request to a '/signup' endpoint for user registration.
 There's also a UI component for a Google Sign-In button
+
+
+
 */
 import React, { useState } from 'react';
 import axios from 'axios';
