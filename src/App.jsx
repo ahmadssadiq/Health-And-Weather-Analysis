@@ -16,6 +16,8 @@ function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -43,10 +45,15 @@ function App() {
         return (kelvin - 273.15).toFixed(2);
     };
 
+    const kelvinToF = (kelvin) => {
+        return ((kelvin - 273.15)* 9/5 + 32).toFixed(2);
+    };
+
     const formatDateTime = (date) => {
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
 
+    console.log(weatherData)
     return (
         <Router>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
@@ -68,8 +75,8 @@ function App() {
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/healthdata" element={<HealthData />} />
                     <Route exact path="/" element={
-                        <main className="grid grid-cols-3 gap-4">
-                            <div className="col-span-1">
+                        <main className="grid grid-cols-3 grid-rows-2 gap-4">
+                            <div className="col-span-1 row-span-1">
                                 {/* Search input and button */}
                                 <div className="mb-4">
                                     <input
@@ -87,7 +94,8 @@ function App() {
                                     </button>
                                 </div>
                             </div>
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
+                            
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-1">
                                 {/* Health Recommendations */}
                                 <h2 className="text-gray-700 font-bold mb-4">Health Recommendations</h2>
                                 <p className="text-gray-600 text-sm mb-4">
@@ -96,18 +104,28 @@ function App() {
                                     Fill in
                                 </Link>
                             </section>
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-1">
                                 {weatherData ? (
                                     <div>
                                         <h2 className="text-2xl font-bold mb-2">Current Weather in {weatherData.name}</h2>
                                         <p className="mb-1">Time: {formatDateTime(currentDateTime)}</p>
-                                        <p className="mb-1">Temperature: {kelvinToCelsius(weatherData.main.temp)} °C</p>
+                                        <p className="mb-1">Temperature: {kelvinToCelsius(weatherData.main.temp)} °C / {kelvinToF(weatherData.main.temp)} °F</p>
                                         <p className="mb-1">Weather: {weatherData.weather[0].main}</p>
                                         <p>Humidity: {weatherData.main.humidity}%</p>
                                     </div>
                                 ) : (
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
+                            </section>
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-2">
+                            {weatherData ? (
+                                    <div>
+                                        <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
+                                    </div>
+                                ) : (
+                                    <><h2 className="text-2xl mb-2">Local Weather Alerts</h2><p>No alerts to display.</p></>
+                                )}
+                                
                             </section>
                         </main>
                     } />
