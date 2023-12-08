@@ -16,8 +16,7 @@ function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
-    const [error, setError] = useState(null);
-
+    const [alertData, setAlertData] = useState('');
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -41,6 +40,17 @@ function App() {
         }
     };
 
+    const handleAlert = async () => {
+        try {
+            const alertResponse = await axios.get(`https://api.weather.gov/alerts?point=${weatherData.coord.lat},${weatherData.coord.lon}`);
+            setAlertData(alertResponse.data);
+        } catch (error) {
+            console.error('Error fetching alert data:', error);
+            setAlertData('');
+        }
+    };
+    
+    
     const kelvinToCelsius = (kelvin) => {
         return (kelvin - 273.15).toFixed(2);
     };
@@ -53,7 +63,7 @@ function App() {
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
 
-    console.log(weatherData)
+    console.log(alertData);
     return (
         <Router>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
@@ -76,7 +86,7 @@ function App() {
                     <Route path="/healthdata" element={<HealthData />} />
                     <Route exact path="/" element={
                         <main className="grid grid-cols-3 grid-rows-2 gap-4">
-                            <div className="col-span-1 row-span-1">
+                            <div className="col-span-1 row-span-1 ">
                                 {/* Search input and button */}
                                 <div className="mb-4">
                                     <input
@@ -95,9 +105,9 @@ function App() {
                                 </div>
                             </div>
                             
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-1">
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-1 height-200">
                                 {/* Health Recommendations */}
-                                <h2 className="text-gray-700 font-bold mb-4">Health Recommendations</h2>
+                                <h2 className="text-gray-700 font-bold mb-4 height-200">Health Recommendations</h2>
                                 <p className="text-gray-600 text-sm mb-4">
                                 </p>
                                 <Link to="/healthdata" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg">
@@ -117,14 +127,50 @@ function App() {
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
                             </section>
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-2">
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-3">
                             {weatherData ? (
-                                    <div>
-                                        <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
-                                    </div>
+                                <div>
+                                    <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
+
+                                    {alertData === '' ? (
+                                    <>
+                                        <p>Please refresh to display alerts.</p>
+                                        <br></br>
+                                        <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                        Refresh
+                                        </button>
+                                    </>
+                                    ) : alertData.features.length === 0 ? (
+                                    <>
+                                        <p>No alerts to display. Please refresh after entering a new city.</p>
+                                        <br></br>
+                                        <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                        Refresh
+                                        </button>
+                                    </>
+                                    ) : (
+                                    <>
+                                        <><p className='font-bold'>{alertData.features[0].properties.event}</p>
+                                        <ol>{alertData.features[0].properties.description}</ol></>
+                                      
+                                    <br></br>
+                                    <p>Please refresh after entering a new city.</p>
+                                    <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                                        Refresh
+                                                    </button></>
+                                    )}
+                                </div>
                                 ) : (
-                                    <><h2 className="text-2xl mb-2">Local Weather Alerts</h2><p>No alerts to display.</p></>
+                                <>
+                                    <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
+                                    <p>Please refresh to display alerts.</p>
+                                    <br></br>
+                                    <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                    Refresh Alerts
+                                    </button>
+                                </>
                                 )}
+                            
                                 
                             </section>
                         </main>
