@@ -1,55 +1,61 @@
-/*
-Handles health data
-It uses useState to manage local states: healthRisks for user input and healthRecommendations for displaying results.
-The component provides an input form for users to enter potential health risks and a button to trigger analysis.
-The analyzeHealthRisks function is a placeholder for making API calls to analyze health risks based on user input.
-*/
-import React, { useState } from 'react';
+// HealthData.js
+import React, { useState, useEffect } from 'react';
+import HealthIssueSelector from './HealthIssueSelector'; // Adjust the path as needed
+import { fetchHealthIssues } from '../healthApi'; // Adjust the path as needed
 
 const HealthData = () => {
-    // State for potential health risks input
-    const [healthRisks, setHealthRisks] = useState('');
-
-    // State for storing personalized health recommendations
+    const [healthIssues, setHealthIssues] = useState([{ id: 1, value: '' }]);
+    const [availableIssues, setAvailableIssues] = useState([]); // State for fetched health issue options
     const [healthRecommendations, setHealthRecommendations] = useState('');
 
-    // Function to handle potential health risks input
-    const handleHealthRisksInput = (event) => {
-        setHealthRisks(event.target.value);
+    useEffect(() => {
+        const loadHealthIssues = async () => {
+            try {
+                const issues = await fetchHealthIssues();
+                console.log("Fetched Issues:", issues); // Log the fetched issues
+                setAvailableIssues(issues);
+            } catch (error) {
+                console.error('Error fetching health issues:', error);
+            }
+        };
+
+        loadHealthIssues();
+    }, []);
+
+    const handleHealthIssueChange = (id, value) => {
+        const updatedIssues = healthIssues.map(issue => {
+            if (issue.id === id) {
+                return { ...issue, value };
+            }
+            return issue;
+        });
+        setHealthIssues(updatedIssues);
     };
 
-    // Function to analyze health risks based on weather
     const analyzeHealthRisks = async () => {
-        try {
-            // Here you can make API calls to analyze health risks based on the user's input
-            // You can set the results in the healthRecommendations state
-        } catch (error) {
-            console.error('Error analyzing health risks:', error);
-        }
+        // Implementation for analyzing health risks
     };
 
     return (
         <div>
-            
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Input Potential Health Risks</h2>
                     <p>In order to provide you with personalized health recommendations based on the weather, we first need to know a little bit more about your potential health issues.</p>
                     <br />
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="healthRisks">
-                            Potential Health Risks
-                        </label>
-                        <textarea
-                            className="w-full px-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-500"
-                            id="healthRisks"
-                            placeholder="Enter your potential health risks here..."
-                            rows="4"
-                            value={healthRisks}
-                            onChange={handleHealthRisksInput}
-                        ></textarea>
-                    </div>
-                    <div className="text-center">
+                    {healthIssues.map(issue => (
+                        <HealthIssueSelector
+                            key={issue.id}
+                            id={issue.id}
+                            onChange={handleHealthIssueChange}
+                            value={issue.value}
+                            options={availableIssues.map(issue => ({
+                                label: issue.label, // Use label as the option's display text
+                                value: issue.value, // Use value as the option's value
+                            }))}
+                        />
+                    ))}
+                    <div className="flex items-center justify-between mt-4">
                         <button
                             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button"
