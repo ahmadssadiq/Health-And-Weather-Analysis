@@ -1,15 +1,24 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import Header from './Header';
-import HealthDataPage from './components/HealthData'; // Corrected import statement
+import HealthData from './components/HealthData'; // Ensure correct import
 
 
 function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [userHealthData, setUserHealthData] = useState(''); // State to store health data
+
+    // Define handleAnalyzeHealthData function here
+    const handleAnalyzeHealthData = (data) => {
+        setUserHealthData(data);
+        // Here, you could also make an API call to analyze the health data
+    };
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -48,7 +57,7 @@ function App() {
 
                 <Routes>
                     <Route path="/signup" element={<SignUp />} />
-                    <Route path="/healthdata" element={<HealthDataPage />} />
+                    <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} />} />
                     <Route exact path="/" element={
                         <main className="grid grid-cols-3 gap-4">
                             <div className="col-span-1">
@@ -69,15 +78,18 @@ function App() {
                                 </div>
                             </div>
 
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 flex flex-col items-start">
                                 <h2 className="text-gray-700 font-bold mb-4">Health Recommendations</h2>
-                                <p className="text-gray-600 text-sm mb-4">
-                                    .
-                                </p>
-                        
-                                <Link to="/healthdata" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg">
-                                   Fill in
-                                </Link>
+                                {userHealthData && (
+                                    <p className="text-gray-600 text-lg mb-4" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                                        {userHealthData}
+                                    </p>
+                                )}
+                                {!userHealthData && (
+                                    <Link to="/healthdata" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg mt-4">
+                                    Fill in
+                                    </Link>
+                                )}
                             </section>
 
                             <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
