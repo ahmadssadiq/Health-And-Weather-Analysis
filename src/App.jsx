@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import Header from './Header';
 import HealthData from './components/HealthData';
+import { getHealthData } from './healthStatsAPI';
 
 
 function App() {
@@ -95,6 +96,7 @@ function App() {
 
     return (
         <Router>
+            
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
                 <Header /> {/* Header component */}
 
