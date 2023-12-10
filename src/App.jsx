@@ -5,15 +5,33 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import Header from './Header';
 import HealthData from './components/HealthData';
+import { fetchHealthCondition } from './healthStatsAPI'; // Import the fetch function
+
 
 function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
     const [userHealthData, setUserHealthData] = useState({ category: '', details: '' });
+    const [healthSearchTerm, setHealthSearchTerm] = useState('');
+    const [healthConditionData, setHealthConditionData] = useState(null);
+    const apiKey = '9e584ac0226e4a7f82d95061cfe07f76'; // Your API key
 
+    // Define handleHealthSearch function here
+    const handleHealthSearch = async (searchTerm) => {
+        try {
+            const response = await fetchHealthCondition(searchTerm, apiKey);
+            if (response) {
+                setHealthConditionData(response);
+            }
+        } catch (error) {
+            console.error('Error searching health data:', error);
+        }
+    };
 
-    // Removed references to healthData since it's not defined or used
+    // Construct the URL for the NHS widget with the search term
+    const nhsWidgetUrl = `https://developer.api.nhs.uk/widgets/conditions?search=${healthSearchTerm}`;
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -88,7 +106,7 @@ function App() {
 
         // Check the condition and return recommendation
         if (conditions[condition]) {
-            return 'we recommend that you do NOT go outside.';
+            return 'we recommend that you take precaution as the weather indicated appears to be unsafe based on your health condition.';
         } else {
             return 'there are no specific recommendations for you, feel free to go outside!';
         }
@@ -101,8 +119,8 @@ function App() {
                 <Header /> {/* Header component */}
 
                 <Routes>
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} onSearch={handleHealthSearch} healthConditionData={healthConditionData} />} />
                     <Route exact path="/" element={
                         <main className="grid grid-cols-3 gap-4">
                             <div className="col-span-1">
@@ -153,28 +171,19 @@ function App() {
                                 )}
                             </section>
 
-                            {/* Combined Health and Weather Analysis Section */}
-                            <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                            
+
+                        </main>
+                    } />
+                </Routes>
+                {/* Combined Health and Weather Analysis Section */}
+                <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
                                 <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
                                 <p className="text-gray-600 text-lg">
                                     {/* Generate and display the combined message */}
                                     {generateCombinedMessage()}
                                 </p>
                             </footer>
-
-                            {/* NHS Widget */}
-                            <div>
-                                <iframe 
-                                    title="NHS Health A to Z Widget" 
-                                    src="https://developer.api.nhs.uk/widgets/conditions?uid=80e893c0-9567-11ee-a24a-c9647f088446" 
-                                    width="100%" 
-                                    height="300px" 
-                                    style={{border: "solid 1px #ccc", maxWidth: "400px"}} 
-                                ></iframe>
-                            </div>
-                        </main>
-                    } />
-                </Routes>
             </div>
         </Router>
     );
