@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import Header from './Header';
-import HealthData from './components/HealthData'; // Ensure correct import
+import HealthData from './components/HealthData';
 
 
 function App() {
@@ -49,6 +49,13 @@ function App() {
     const formatDateTime = (date) => {
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
+
+    const generateCombinedMessage = () => {
+        if (!userHealthData || !weatherData) return '';
+
+        return `Based on your health information: ${userHealthData} and the weather of ${weatherData.name}, ... [additional message here]`;
+    };
+
 
     return (
         <Router>
@@ -104,6 +111,14 @@ function App() {
                                 ) : (
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
+                            </section>
+
+                            {/* New Section for Combined Message */}
+                            <section className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                                <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
+                                <p className="text-gray-600 text-lg">
+                                    {generateCombinedMessage()}
+                                </p>
                             </section>
                         </main>
                     } />
