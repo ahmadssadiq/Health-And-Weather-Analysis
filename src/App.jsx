@@ -8,8 +8,8 @@ It also renders a UI for searching weather data and displaying health recommenda
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import SignUp from './components/SignUp'; // Ensure the path is correct
-import HealthDataPage from './components/HealthData'; // Ensure the path is correct
+import SignUp from './SignUp'; // Ensure the path is correct
+import HealthDataPage from './HealthData'; // Ensure the path is correct
 
 function App() {
     const [weatherData, setWeatherData] = useState(null);
