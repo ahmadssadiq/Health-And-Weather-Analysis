@@ -1,8 +1,6 @@
 // healthApi.js
 import axios from 'axios';
 
-
-// Modify this part according to the actual structure of the API response
 const fetchHealthIssues = async () => {
    try {
        const url = 'https://api.nhs.uk/conditions/?page=1';
@@ -12,11 +10,9 @@ const fetchHealthIssues = async () => {
            }
        });
 
-
-       // Hypothetical adjustment: Change the path according to the actual response
        if (response.data && response.data.actualHealthIssuesField) {
            const healthIssues = response.data.actualHealthIssuesField.map(issue => ({
-               value: issue.id, // Adjust these keys according to the actual data structure
+               value: issue.id, 
                label: issue.name
            }));
            return healthIssues;

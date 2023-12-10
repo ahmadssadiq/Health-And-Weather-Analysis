@@ -17,7 +17,7 @@ function App() {
     const [healthConditionData, setHealthConditionData] = useState(null);
     const apiKey = '9e584ac0226e4a7f82d95061cfe07f76'; // Your API key
 
-    // Define handleHealthSearch function here
+    //handleHealthSearch function
     const handleHealthSearch = async (searchTerm) => {
         try {
             const response = await fetchHealthCondition(searchTerm, apiKey);
@@ -29,7 +29,7 @@ function App() {
         }
     };
 
-    // Construct the URL for the NHS widget with the search term
+    // URL for the NHS widget
     const nhsWidgetUrl = `https://developer.api.nhs.uk/widgets/conditions?search=${healthSearchTerm}`;
 
 
@@ -41,10 +41,9 @@ function App() {
     }, []);
     
     
-    // Define handleAnalyzeHealthData function here
+    // handleAnalyzeHealthData function
     const handleAnalyzeHealthData = (data) => {
         setUserHealthData(data);
-        // Here, you could also make an API call to analyze the health data
     };
 
 
@@ -54,7 +53,7 @@ function App() {
 
     const handleSearch = async () => {
         try {
-            const apiKey = '48e3aaf913c90b624d8126f2fe8f994f'; // Replace with your actual API key
+            const apiKey = '48e3aaf913c90b624d8126f2fe8f994f'; 
             const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`);
             setWeatherData(response.data);
         } catch (error) {
@@ -74,10 +73,9 @@ function App() {
     const generateCombinedMessage = () => {
         if (!userHealthData.category || !weatherData) return '';
 
-        // Start the message
+
         let message = `Based on the fact that your condition is ${userHealthData.category}, specifically ${userHealthData.details}, and because you are in ${weatherData.name}, `;
 
-        // Add specific recommendations
         message += getHealthRecommendations(userHealthData.category, weatherData);
 
         return message;
@@ -85,7 +83,6 @@ function App() {
 
     // Function to get health recommendations based on condition and weather
     const getHealthRecommendations = (condition, weather) => {
-        // Define the threshold values for different weather parameters
         const tempCelsius = weather.main.temp - 273.15; // Convert Kelvin to Celsius
         const humidity = weather.main.humidity;
         const weatherMain = weather.weather[0].main; // Main weather condition
@@ -104,7 +101,7 @@ function App() {
             'Heat-Related Illnesses': tempCelsius > 32 && humidity > 60 && weatherMain === 'Clear'
         };
 
-        // Check the condition and return recommendation
+        // returns recommendation
         if (conditions[condition]) {
             return 'we recommend that you take precaution as the weather indicated appears to be unsafe based on your health condition.';
         } else {
@@ -117,7 +114,6 @@ function App() {
         <Router>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
                 <Header /> {/* Header component */}
-
                 <Routes>
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} onSearch={handleHealthSearch} healthConditionData={healthConditionData} />} />
@@ -170,8 +166,6 @@ function App() {
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
                             </section>
-
-                            
 
                         </main>
                     } />

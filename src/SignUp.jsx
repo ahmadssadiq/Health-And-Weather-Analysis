@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; // import useNavigate
 import { UserContext } from './UserContext'; // import UserContext
 
 
@@ -18,7 +18,7 @@ function SignUp() {
         console.log(userObject);
         setUser(userObject);
         document.getElementById("googleSignInDiv").hidden = true;
-        navigate('/'); // Navigate to the home page or another page as required
+        navigate('/'); // Navigates to the home page
     }
 
     function handleSignOut(event) {

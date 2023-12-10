@@ -3,7 +3,7 @@ import React from 'react';
 
 
 const HealthIssueSelector = ({ id, onChange, value, options = [] }) => {
-   // Check if options are available
+   // Checks if options are available
    if (!options.length) {
        return <div>Loading health issues...</div>;
    }
