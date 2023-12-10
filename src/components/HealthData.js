@@ -9,13 +9,34 @@ import React, { useState } from 'react';
 const HealthData = () => {
     // State for potential health risks input
     const [healthRisks, setHealthRisks] = useState('');
-
     // State for storing personalized health recommendations
     const [healthRecommendations, setHealthRecommendations] = useState('');
+    // State for selected category
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    // Sample categories (replace with actual categories)
+    const categories = [
+        'Respiratory Disorders ((ex. Asthma, Bronchitis, Sinusitis)',
+        'Cardiovascular Diseases (ex. Heart Conditions)',
+        'Arthritis and Musculoskeletal Conditions (ex. Arthritis, Osteoarthritis, Fibromyalgia)',
+        'Migraines/Headaches',
+        'Allergies',
+        'Skin Conditions (ex. Eczema, Psoriasis, Rosacea)',
+        'Infectious Diseases (ex. Influenza, Common Cold, Flu)',
+        'Mental Health Conditions (ex. Seasonal Affective Disorder (SAD))',
+        'Raynauds Phenomenon',
+        'Heat-Related Illnesses (ex. Heat Stroke, Heat Exhaustion, and Dehydration)',
+        'Other Conditions'
+    ];
 
     // Function to handle potential health risks input
     const handleHealthRisksInput = (event) => {
         setHealthRisks(event.target.value);
+    };
+
+    // Function to handle category selection
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.target.value);
     };
 
     // Function to analyze health risks based on weather
@@ -33,8 +54,17 @@ const HealthData = () => {
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Input Potential Health Risks</h2>
-                    <p>In order to provide you with personalized health recommendations based on the weather, we first need to know a little bit more about your potential health issues.</p>
-                    <br />
+                    <p>Please select one category:</p>
+                    <select
+                        className="w-full mb-4 px-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-500"
+                        value={selectedCategory}
+                        onChange={handleCategoryChange}
+                    >
+                        <option value="">Select a Category</option>
+                        {categories.map(category => (
+                            <option key={category} value={category}>{category}</option>
+                        ))}
+                    </select>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="healthRisks">
                             Potential Health Risks
