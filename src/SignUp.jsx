@@ -1,27 +1,52 @@
-/*
-It uses useState to manage form inputs: username, email, and password.
-The handleSignUp function is designed to send a POST request to a '/signup' endpoint for user registration.
-There's also a UI component for a Google Sign-In button
-
-
-
-*/
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { UserContext } from './UserContext'; // import UserContext
+
 
 function SignUp() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { user, setUser } = useContext(UserContext); // Use UserContext
+    const navigate = useNavigate(); // Initialize useNavigate
+
+    function handleCallbackResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        var userObject = jwt_decode(response.credential);
+        console.log(userObject);
+        setUser(userObject);
+        document.getElementById("googleSignInDiv").hidden = true;
+        navigate('/'); // Navigate to the home page or another page as required
+    }
+
+    function handleSignOut(event) {
+        setUser({});
+        document.getElementById("googleSignInDiv").hidden = false;
+    }
+
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "850002868075-riog8tkerkj6rm9p4981v1c208i7fi64.apps.googleusercontent.com",
+            callback: handleCallbackResponse
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById("googleSignInDiv"),
+            { theme: "outline", size: "large" }
+        );
+
+        google.accounts.id.prompt();
+    }, []);
 
     const handleSignUp = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/signup', {
-                username, email, password
-            });
+            const response = await axios.post('/signup', { username, email, password });
             if (response.data.status === 'User created') {
-                window.location.href = '/healthdata'; // Use React Router for navigation if possible
+                window.location.href = '/healthdata';
             } else {
                 console.error('Signup failed:', response.data);
             }
@@ -32,8 +57,6 @@ function SignUp() {
 
     return (
         <div>
-
-            {/* Sign Up Form */}
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Sign Up</h2>
@@ -84,7 +107,7 @@ function SignUp() {
                     </div>
 
                     {/* Sign Up Button */}
-                    <div id="signInDiv" className="flex items-center justify-between space-x-4">
+                    <div className="mb-4">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="submit"
@@ -92,11 +115,18 @@ function SignUp() {
                         >
                             Sign Up
                         </button>
-                        {/* Google Sign In Button (you can integrate Google Sign-In here) */}
-                        <div className="flex items-center justify-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            <i className="fab fa-google mr-2"></i> Login with Google
-                        </div>
                     </div>
+
+                    {/* Google Sign In Button */}
+                    <div id="googleSignInDiv" className="mb-4"></div>
+
+                    {/* Sign Out Button (shown when user is logged in) */}
+                    {Object.keys(user).length !== 0 &&
+                        <button onClick={handleSignOut} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Sign Out
+                        </button>
+                    }
+
                     <p className="text-center text-gray-500 text-xs mt-6">
                         &copy;2023 Health & Weather Analyzer. All rights reserved.
                     </p>
