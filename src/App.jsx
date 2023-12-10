@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Include Link import
-import SignUp from './SignUp'; // Ensure the path is correct
-import HealthDataPage from './HealthData'; // Ensure the path is correct
-import Header from './Header'; // Ensure the Header component is correctly implemented
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import SignUp from './SignUp';
+import Header from './Header';
+import HealthDataPage from './components/HealthData'; // Corrected import statement
+
 
 function App() {
     const [weatherData, setWeatherData] = useState(null);
@@ -71,10 +72,11 @@ function App() {
                             <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
                                 <h2 className="text-gray-700 font-bold mb-4">Health Recommendations</h2>
                                 <p className="text-gray-600 text-sm mb-4">
-                                    Login before you can use this feature.
+                                    .
                                 </p>
-                                <Link to="/signup" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg">
-                                    Login
+                        
+                                <Link to="/healthdata" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg">
+                                   Fill in
                                 </Link>
                             </section>
 
