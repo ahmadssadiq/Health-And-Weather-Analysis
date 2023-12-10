@@ -11,7 +11,8 @@ function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
-    const [userHealthData, setUserHealthData] = useState(''); // State to store health data
+    //const [userHealthData, setUserHealthData] = useState(''); // State to store health data
+    const [userHealthData, setUserHealthData] = useState({ category: '', details: '' });
 
     // Define handleAnalyzeHealthData function here
     const handleAnalyzeHealthData = (data) => {
@@ -51,9 +52,44 @@ function App() {
     };
 
     const generateCombinedMessage = () => {
-        if (!userHealthData || !weatherData) return '';
+        if (!userHealthData.category || !weatherData) return '';
 
-        return `Based on your health information: ${userHealthData} and the weather of ${weatherData.name}, ... [additional message here]`;
+        // Start the message
+        let message = `Based on the fact that your condition is ${userHealthData.category}, specifically ${userHealthData.details}, and because you are in ${weatherData.name}, `;
+
+        // Add specific recommendations
+        message += getHealthRecommendations(userHealthData.category, weatherData);
+
+        return message;
+    };
+
+    // Function to get health recommendations based on condition and weather
+    const getHealthRecommendations = (condition, weather) => {
+        // Define the threshold values for different weather parameters
+        const tempCelsius = weather.main.temp - 273.15; // Convert Kelvin to Celsius
+        const humidity = weather.main.humidity;
+        const weatherMain = weather.weather[0].main; // Main weather condition
+
+        // Conditions and recommendations
+        const conditions = {
+            'Respiratory Disorders': tempCelsius < 0 || humidity > 60 || ['Rain', 'Wind'].includes(weatherMain),
+            'Cardiovascular Diseases': tempCelsius < 0 || tempCelsius > 32 || humidity > 60,
+            'Arthritis and Musculoskeletal Conditions': tempCelsius < 10 || humidity > 60,
+            'Migraines/Headaches': (tempCelsius < 0 || tempCelsius > 32) && humidity > 80,
+            'Allergies': tempCelsius > 21 && (humidity < 40 || ['Rain', 'Wind'].includes(weatherMain)),
+            'Skin Conditions': (tempCelsius < 0 && humidity < 30) || humidity > 70,
+            'Infectious Diseases': tempCelsius < 10 && humidity < 40 && weatherMain === 'Rain',
+            'Mental Health Conditions': tempCelsius < 0,
+            "Raynaud's Phenomenon": tempCelsius < 15,
+            'Heat-Related Illnesses': tempCelsius > 32 && humidity > 60 && weatherMain === 'Clear'
+        };
+
+        // Check the condition and return recommendation
+        if (conditions[condition]) {
+            return 'we recommend that you do NOT go outside.';
+        } else {
+            return 'there are no specific recommendations for you, feel free to go outside!';
+        }
     };
 
 
@@ -85,16 +121,18 @@ function App() {
                                 </div>
                             </div>
 
-                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 flex flex-col items-start">
-                                <h2 className="text-gray-700 font-bold mb-4">Health Recommendations</h2>
-                                {userHealthData && (
-                                    <p className="text-gray-600 text-lg mb-4" style={{ marginTop: '20px', marginBottom: '20px' }}>
-                                        {userHealthData}
+                            {/* Health Recommendations Section */}
+                            <section className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                                <h2 className="text-gray-700 font-bold mb-4 text-xl">Health Recommendations</h2>
+                                {userHealthData.category && userHealthData.details && (
+                                    <p className="text-gray-600 text-lg">
+                                        {userHealthData.category}: {userHealthData.details}
                                     </p>
                                 )}
-                                {!userHealthData && (
+                                {/* Show "Fill in" button only if category and details are empty */}
+                                {(!userHealthData.category || !userHealthData.details) && (
                                     <Link to="/healthdata" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg mt-4">
-                                    Fill in
+                                        Fill in
                                     </Link>
                                 )}
                             </section>
@@ -113,13 +151,14 @@ function App() {
                                 )}
                             </section>
 
-                            {/* New Section for Combined Message */}
-                            <section className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                            {/* Combined Health and Weather Analysis Section */}
+                            <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
                                 <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
                                 <p className="text-gray-600 text-lg">
+                                    {/* Generate and display the combined message */}
                                     {generateCombinedMessage()}
                                 </p>
-                            </section>
+                            </footer>
                         </main>
                     } />
                 </Routes>

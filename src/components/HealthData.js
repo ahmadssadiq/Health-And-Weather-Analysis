@@ -10,16 +10,16 @@ const HealthData = ({ onAnalyze }) => { // Make sure onAnalyze is received as a 
     const navigate = useNavigate();
 
     const categories = [
-        'Respiratory Disorders (ex. Asthma, Bronchitis, Sinusitis)',
-        'Cardiovascular Diseases (ex. Heart Conditions)',
-        'Arthritis and Musculoskeletal Conditions (ex. Arthritis, Osteoarthritis, Fibromyalgia)',
+        'Respiratory Disorders',
+        'Cardiovascular Diseases',
+        'Arthritis and Musculoskeletal Conditions',
         'Migraines/Headaches',
         'Allergies',
-        'Skin Conditions (ex. Eczema, Psoriasis, Rosacea)',
-        'Infectious Diseases (ex. Influenza, Common Cold, Flu)',
-        'Mental Health Conditions (ex. Seasonal Affective Disorder (SAD))',
+        'Skin Conditions',
+        'Infectious Diseases',
+        'Mental Health Conditions',
         'Raynauds Phenomenon',
-        'Heat-Related Illnesses (ex. Heat Stroke, Heat Exhaustion, and Dehydration)',
+        'Heat-Related Illnesses',
         'Other Conditions'
     ];
 
@@ -34,7 +34,7 @@ const HealthData = ({ onAnalyze }) => { // Make sure onAnalyze is received as a 
 
     const analyzeHealthRisks = async () => {
         // Call your API logic here
-        onAnalyze(healthRisks); // Use the passed onAnalyze function
+        onAnalyze({ category: selectedCategory, details: healthRisks });
         navigate('/');
     };
 
