@@ -30,12 +30,6 @@ const HealthData = () => {
 
     return (
         <div>
-            <header className="bg-white p-4 shadow-lg">
-                <div className="flex items-center">
-                    <i className="fas fa-cloud-sun text-blue-500 text-2xl"></i>
-                    <h1 className="text-xl text-gray-700 font-bold ml-2">Health & Weather Analyzer</h1>
-                </div>
-            </header>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Input Potential Health Risks</h2>
