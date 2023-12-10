@@ -1,26 +1,19 @@
-// App.js
+// App.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import Header from './Header';
 import HealthData from './components/HealthData';
-import { getHealthData } from './healthStatsAPI';
-
 
 function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
-    //const [userHealthData, setUserHealthData] = useState(''); // State to store health data
     const [userHealthData, setUserHealthData] = useState({ category: '', details: '' });
 
-    // Define handleAnalyzeHealthData function here
-    const handleAnalyzeHealthData = (data) => {
-        setUserHealthData(data);
-        // Here, you could also make an API call to analyze the health data
-    };
 
+    // Removed references to healthData since it's not defined or used
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -28,6 +21,14 @@ function App() {
         }, 1000);
         return () => clearInterval(timer);
     }, []);
+    
+    
+    // Define handleAnalyzeHealthData function here
+    const handleAnalyzeHealthData = (data) => {
+        setUserHealthData(data);
+        // Here, you could also make an API call to analyze the health data
+    };
+
 
     const handleCityNameChange = (event) => {
         setCityName(event.target.value);
@@ -96,7 +97,6 @@ function App() {
 
     return (
         <Router>
-            
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
                 <Header /> {/* Header component */}
 
@@ -124,7 +124,7 @@ function App() {
                             </div>
 
                             {/* Health Recommendations Section */}
-                            <section className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1">
                                 <h2 className="text-gray-700 font-bold mb-4 text-xl">Health Recommendations</h2>
                                 {userHealthData.category && userHealthData.details && (
                                     <p className="text-gray-600 text-lg">
@@ -161,6 +161,17 @@ function App() {
                                     {generateCombinedMessage()}
                                 </p>
                             </footer>
+
+                            {/* NHS Widget */}
+                            <div>
+                                <iframe 
+                                    title="NHS Health A to Z Widget" 
+                                    src="https://developer.api.nhs.uk/widgets/conditions?uid=80e893c0-9567-11ee-a24a-c9647f088446" 
+                                    width="100%" 
+                                    height="300px" 
+                                    style={{border: "solid 1px #ccc", maxWidth: "400px"}} 
+                                ></iframe>
+                            </div>
                         </main>
                     } />
                 </Routes>
