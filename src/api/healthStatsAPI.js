@@ -1,16 +1,21 @@
 // healthStatsAPI.js
 
-function getHealthData(parameters) {
-    // Replace with actual API endpoint and parameters
-    const url = `https://api.healthstats.com/data?params=${parameters}`;
+async function fetchHealthCondition(condition, apiKey) {
+    const url = `https://api.nhs.uk/conditions/${condition}`;
 
-    return fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // Process and return health data
-            return data;
-        })
-        .catch(error => {
-            console.error("Error fetching health data:", error);
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'subscription-key': apiKey,
+            },
         });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching health condition:', error);
+    }
 }
+
+export { fetchHealthCondition };
