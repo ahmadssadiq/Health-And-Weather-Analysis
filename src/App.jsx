@@ -95,6 +95,8 @@ function App() {
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
 
+    
+    
     const generateCombinedMessage = () => {
         if (!userHealthData.category || !weatherData) return '';
 

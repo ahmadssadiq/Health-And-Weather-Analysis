@@ -3,11 +3,12 @@ import { initializeApp } from 'firebase/app';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { UserProvider } from './UserContext'; // Import UserProvider
+
+import { UserProvider } from './UserContext'; // Import 
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-// Your web app's Firebase configuration
+// web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCTx-vgovENB0YtmiCEXk4I5FsYLIDafj8",
   authDomain: "web-app-9abe7.firebaseapp.com",
@@ -24,7 +25,7 @@ const app = initializeApp(firebaseConfig);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <UserProvider> {/* Wrap the entire App with UserProvider */}
+    <UserProvider> 
         <App />
     </UserProvider>
   </React.StrictMode>,

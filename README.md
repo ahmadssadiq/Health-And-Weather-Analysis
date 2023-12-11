@@ -22,3 +22,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see the r
 ## GitHub Repository Migration
 
 We have migrated to a new GitHub repository to maintain a cleaner code structure and resolve issues encountered with React in our previous repository. This migration ensures a streamlined development process. Our previous work, including commits, can be viewed at the [old GitHub repository](https://github.com/Jzhang011127/cs411-group-23/).
+
