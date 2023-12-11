@@ -1,9 +1,11 @@
 // App.jsx
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import SignUp from './SignUp';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Header from './Header';
+import SignIn from './SignIn';
+import SignUp from './SignUp';
+import { UserContext } from './UserContext';
 import HealthData from './components/HealthData';
 import { fetchHealthCondition } from './healthStatsAPI'; // Import the fetch function
 
@@ -15,6 +17,7 @@ function App() {
     const [alertData, setAlertData] = useState('');
     const [userHealthData, setUserHealthData] = useState({ category: '', details: '' });
     const [healthSearchTerm, setHealthSearchTerm] = useState('');
+    const { user } = useContext(UserContext);
     const [healthConditionData, setHealthConditionData] = useState(null);
     const apiKey = '9e584ac0226e4a7f82d95061cfe07f76'; // Your API key
 
@@ -40,7 +43,13 @@ function App() {
         }, 1000);
         return () => clearInterval(timer);
     }, []);
-    
+
+    useEffect(() => {
+        if (!user) {
+            setUserHealthData(null); // Clear health data on logout
+        }
+    }, [user]);
+
     
     // handleAnalyzeHealthData function
     const handleAnalyzeHealthData = (data) => {
@@ -129,8 +138,9 @@ function App() {
     return (
         <Router>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
-                <Header /> {/* Header component */}
+                <Header user={user} /> {/* Header component */}
                 <Routes>
+                <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} onSearch={handleHealthSearch} healthConditionData={healthConditionData} />} />
                     <Route exact path="/" element={
