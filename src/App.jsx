@@ -182,6 +182,20 @@ function App() {
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
                             </section>
+                            
+                        </main>
+                    } />
+                </Routes>
+                
+                {/* Combined Health and Weather Analysis Section */}
+                <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
+                                <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
+                                <p className="text-gray-600 text-lg">
+                                    {/* Generate and display the combined message */}
+                                    {generateCombinedMessage()}
+                                </p>
+                            </footer>
+                            <br></br>
                             <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-3">
                             {weatherData ? (
                                 <div>
@@ -228,17 +242,6 @@ function App() {
                             
                                 
                             </section>
-                        </main>
-                    } />
-                </Routes>
-                {/* Combined Health and Weather Analysis Section */}
-                <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
-                                <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
-                                <p className="text-gray-600 text-lg">
-                                    {/* Generate and display the combined message */}
-                                    {generateCombinedMessage()}
-                                </p>
-                            </footer>
             </div>
         </Router>
     );
