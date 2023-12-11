@@ -1,7 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+// password being setup properly, as firebase requires actual password, and in fact, being salted at the server side
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import jwt_decode from 'jwt-decode';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // import useNavigate
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // import useNavigate
+import "./SignUp.css";
 import { UserContext } from './UserContext'; // import UserContext
 
 
@@ -10,8 +12,13 @@ function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { user, setUser } = useContext(UserContext); // Use UserContext
-    const navigate = useNavigate(); // Initialize useNavigate
+    const [message, setMessage] = useState(null); // For displaying messages to the user
+    const [error, setError] = useState(null); // For displaying error messages
+    const [success, setSuccess] = useState(''); // State to manage success messages
 
+    // Hook for navigating to another route on success
+    const navigate = useNavigate();
+    
     function handleCallbackResponse(response) {
         console.log("Encoded JWT ID token: " + response.credential);
         var userObject = jwt_decode(response.credential);
@@ -41,22 +48,42 @@ function SignUp() {
         google.accounts.id.prompt();
     }, []);
 
-    const handleSignUp = async (event) => {
-        event.preventDefault();
-        try {
-            const response = await axios.post('/signup', { username, email, password });
-            if (response.data.status === 'User created') {
-                window.location.href = '/healthdata';
-            } else {
-                console.error('Signup failed:', response.data);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+    // ... handleSignUp function
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    setError(''); // Clear any existing errors
+
+    // Get the Firebase auth object
+    const auth = getAuth();
+
+    // Call Firebase to create a new user with email and password
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // User signed up successfully
+        const user = userCredential.user;
+        
+        // Set the user in your context/state
+        setUser(user);
+
+        // Navigate to the main page
+        navigate('/'); // Assuming your main page is at the root
+      })
+      .catch((error) => {
+        // Set error state to display the error message
+        setError(`Sign-up failed: ${error.message}`);
+      });
+  };
 
     return (
         <div>
+            {/* Success message box, only shown when the success message is set */}
+            {success && <div className="success-box">{success}</div>}
+           {/* Error message box */}
+            {error && <div className="error-box">{error}</div>}
+            <Link to="/signin" className="sign-in-link bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
+                Already have an account? Sign in
+            </Link>
+            <form onSubmit={handleSignUp}>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Sign Up</h2>
@@ -132,6 +159,7 @@ function SignUp() {
                     </p>
                 </div>
             </div>
+            </form>
         </div>
     );
 }

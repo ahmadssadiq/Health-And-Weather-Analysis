@@ -1,6 +1,7 @@
 // HealthData.js
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../UserContext';
 
 
 const HealthData = ({ onAnalyze, onSearch, healthConditionData }) => {
@@ -8,6 +9,7 @@ const HealthData = ({ onAnalyze, onSearch, healthConditionData }) => {
     const [healthRecommendations, setHealthRecommendations] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+    const { user } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleHealthRisksInput = (event) => {
@@ -25,7 +27,7 @@ const HealthData = ({ onAnalyze, onSearch, healthConditionData }) => {
     };
 
     const handleSearchSubmit = () => {
-        if(onSearch) {
+        if (onSearch) {
             onSearch(searchTerm);
         } else {
             console.error("onSearch function not provided");
@@ -49,7 +51,7 @@ const HealthData = ({ onAnalyze, onSearch, healthConditionData }) => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 flex justify-center items-center p-8">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                
+
 
                 <h2 className="text-2xl font-bold text-center text-gray-700 mb-8">Input Potential Health Risks</h2>
                 <p>Please select one category:</p>
@@ -79,7 +81,7 @@ const HealthData = ({ onAnalyze, onSearch, healthConditionData }) => {
                         ></textarea>
                     </div>
                 )}
-                
+
 
                 <div className="text-center">
                     <button

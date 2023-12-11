@@ -1,9 +1,11 @@
 // App.jsx
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import SignUp from './SignUp';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Header from './Header';
+import SignIn from './SignIn';
+import SignUp from './SignUp';
+import { UserContext } from './UserContext';
 import HealthData from './components/HealthData';
 import { fetchHealthCondition } from './healthStatsAPI'; // Import the fetch function
 
@@ -12,8 +14,10 @@ function App() {
     const [weatherData, setWeatherData] = useState(null);
     const [cityName, setCityName] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [alertData, setAlertData] = useState('');
     const [userHealthData, setUserHealthData] = useState({ category: '', details: '' });
     const [healthSearchTerm, setHealthSearchTerm] = useState('');
+    const { user } = useContext(UserContext);
     const [healthConditionData, setHealthConditionData] = useState(null);
     const apiKey = '9e584ac0226e4a7f82d95061cfe07f76'; // Your API key
 
@@ -39,7 +43,13 @@ function App() {
         }, 1000);
         return () => clearInterval(timer);
     }, []);
-    
+
+    useEffect(() => {
+        if (!user) {
+            setUserHealthData(null); // Clear health data on logout
+        }
+    }, [user]);
+
     
     // handleAnalyzeHealthData function
     const handleAnalyzeHealthData = (data) => {
@@ -62,8 +72,23 @@ function App() {
         }
     };
 
+    const handleAlert = async () => {
+        try {
+            const alertResponse = await axios.get(`https://api.weather.gov/alerts?point=${weatherData.coord.lat},${weatherData.coord.lon}`);
+            setAlertData(alertResponse.data);
+        } catch (error) {
+            console.error('Error fetching alert data:', error);
+            setAlertData('');
+        }
+    };
+    
+    
     const kelvinToCelsius = (kelvin) => {
         return (kelvin - 273.15).toFixed(2);
+    };
+
+    const kelvinToF = (kelvin) => {
+        return ((kelvin - 273.15)* 9/5 + 32).toFixed(2);
     };
 
     const formatDateTime = (date) => {
@@ -113,8 +138,9 @@ function App() {
     return (
         <Router>
             <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-100 p-8">
-                <Header /> {/* Header component */}
+                <Header user={user} /> {/* Header component */}
                 <Routes>
+                <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/healthdata" element={<HealthData onAnalyze={handleAnalyzeHealthData} onSearch={handleHealthSearch} healthConditionData={healthConditionData} />} />
                     <Route exact path="/" element={
@@ -158,7 +184,7 @@ function App() {
                                     <div>
                                         <h2 className="text-2xl font-bold mb-2">Current Weather in {weatherData.name}</h2>
                                         <p className="mb-1">Time: {formatDateTime(currentDateTime)}</p>
-                                        <p className="mb-1">Temperature: {kelvinToCelsius(weatherData.main.temp)} °C</p>
+                                        <p className="mb-1">Temperature: {kelvinToCelsius(weatherData.main.temp)} °C / {kelvinToF(weatherData.main.temp)} °F</p>
                                         <p className="mb-1">Weather: {weatherData.weather[0].main}</p>
                                         <p>Humidity: {weatherData.main.humidity}%</p>
                                     </div>
@@ -166,10 +192,11 @@ function App() {
                                     <p>No weather data to display. Please search for a city.</p>
                                 )}
                             </section>
-
+                            
                         </main>
                     } />
                 </Routes>
+                
                 {/* Combined Health and Weather Analysis Section */}
                 <footer className="bg-white p-6 rounded-lg shadow-lg mt-6 w-full">
                                 <h2 className="text-gray-700 font-bold mb-4 text-xl">Combined Health and Weather Analysis</h2>
@@ -178,6 +205,53 @@ function App() {
                                     {generateCombinedMessage()}
                                 </p>
                             </footer>
+                            <br></br>
+                            <section className="bg-white p-6 rounded-lg shadow-lg col-span-1 row-span-3">
+                            {weatherData ? (
+                                <div>
+                                    <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
+
+                                    {alertData === '' ? (
+                                    <>
+                                        <p>Please refresh to display alerts.</p>
+                                        <br></br>
+                                        <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                        Refresh
+                                        </button>
+                                    </>
+                                    ) : alertData.features.length === 0 ? (
+                                    <>
+                                        <p>No alerts to display. Please refresh after entering a new city.</p>
+                                        <br></br>
+                                        <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                        Refresh
+                                        </button>
+                                    </>
+                                    ) : (
+                                    <>
+                                        <><p className='font-bold'>{alertData.features[0].properties.event}</p>
+                                        <ol>{alertData.features[0].properties.description}</ol></>
+                                      
+                                    <br></br>
+                                    <p>Please refresh after entering a new city.</p>
+                                    <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                                        Refresh
+                                                    </button></>
+                                    )}
+                                </div>
+                                ) : (
+                                <>
+                                    <h2 className="text-2xl mb-2">Local Weather Alerts</h2>
+                                    <p>Please refresh to display alerts.</p>
+                                    <br></br>
+                                    <button onClick={handleAlert} className="bg-blue-500 text-white p-2 rounded">
+                                    Refresh Alerts
+                                    </button>
+                                </>
+                                )}
+                            
+                                
+                            </section>
             </div>
         </Router>
     );
